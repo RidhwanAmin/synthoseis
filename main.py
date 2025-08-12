@@ -54,7 +54,7 @@ def build_model(user_json: str, run_id, test_mode: int = None, rpm_factors=None)
     seismic.build_elastic_properties("inv_vel")
     seismic.build_seismic_volumes()
 
-    closures.write_closure_info_to_log(seismic.rfc_raw[1:4, ...])
+    closures.write_closure_info_to_log(seismic.rfc_raw[:, ...])
 
     elapsed_time = datetime.datetime.now() - p.start_time
     print("\n\n\n...elapsed time is {}".format(elapsed_time))

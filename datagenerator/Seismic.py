@@ -279,13 +279,27 @@ class SeismicVolume(Geomodel):
         factor_near = self.cfg.rpm_scaling_factors["nearfactor"]
         factor_mid = self.cfg.rpm_scaling_factors["midfactor"]
         factor_far = self.cfg.rpm_scaling_factors["farfactor"]
-        cube_incr = 0
-        if self.cfg.model_qc_volumes and dat.shape[0] > 3:
-            # 0 degrees has been added at start, and 45 at end
-            cube_incr = 1
-        scaled_data[0 + cube_incr, ...] *= factor_near
-        scaled_data[1 + cube_incr, ...] *= factor_mid
-        scaled_data[2 + cube_incr, ...] *= factor_far
+        # cube_incr = 0
+        # if self.cfg.model_qc_volumes and dat.shape[0] > 3:
+        #     # 0 degrees has been added at start, and 45 at end
+        #     cube_incr = 1
+        # scaled_data[0 + cube_incr, ...] *= factor_near
+        # scaled_data[1 + cube_incr, ...] *= factor_mid
+        # scaled_data[2 + cube_incr, ...] *= factor_far
+        num_angles = scaled_data.shape[0]
+        if num_angles == 1:
+            # Only one angle: treat as "near"
+            scaled_data[0, ...] *= factor_near
+        elif num_angles == 2:
+            # Two angles: treat as "near" and "mid"
+            scaled_data[0, ...] *= factor_near
+            scaled_data[1, ...] *= factor_mid
+        elif num_angles >= 3:
+            # Three or more: treat as "near", "mid", "far"
+            scaled_data[0, ...] *= factor_near
+            scaled_data[1, ...] *= factor_mid
+            scaled_data[2, ...] *= factor_far
+            # Optional: handle more than three as you see fit
 
         for i, ang in enumerate(self.cfg.incident_angles):
             data = scaled_data[i, ...]
@@ -339,7 +353,13 @@ class SeismicVolume(Geomodel):
                 vp1, vp2 = _vp[i, j, :-1], _vp[i, j, 1:]
                 vs1, vs2 = _vs[i, j, :-1], _vs[i, j, 1:]
                 rfc = RFC(vp1, vs1, rho1, vp2, vs2, rho2, theta)
-                zoep[i, j, :, :] = rfc.zoeppritz_reflectivity().T
+                # zoep[i, j, :, :] = rfc.zoeppritz_reflectivity().T
+                rfc_arr = rfc.zoeppritz_reflectivity()
+                if rfc_arr.ndim == 1:
+                    rfc_arr = rfc_arr[:, np.newaxis]  # shape (depth, 1)
+                else:
+                    rfc_arr = rfc_arr.T  # shape (depth, n_angles)
+                zoep[i, j, :, :] = rfc_arr
         # Set any voxels with imaginary parts to 0, since all transmitted energy travels along the reflector
         # zoep[np.where(np.imag(zoep) != 0)] = 0
         # discard complex values and set dtype to float64
@@ -427,11 +447,17 @@ class SeismicVolume(Geomodel):
         wb_plus_15samples = wb_map / (self.cfg.digi + 15) * self.cfg.digi
 
         # Use the Middle angle cube for normalisation
+        # if self.cfg.model_qc_volumes:
+        #     # 0 and 45 degree cubes have been added
+        #     norm_cube = self.rfc_raw[2, ...]
+        # else:
+        #     norm_cube = self.rfc_raw[1, ...]
         if self.cfg.model_qc_volumes:
-            # 0 and 45 degree cubes have been added
-            norm_cube = self.rfc_raw[2, ...]
+            norm_idx = min(2, self.rfc_raw.shape[0] - 1)  # safest, if <3 angles exist
+            norm_cube = self.rfc_raw[norm_idx, ...]
         else:
-            norm_cube = self.rfc_raw[1, ...]
+            norm_idx = min(1, self.rfc_raw.shape[0] - 1)
+            norm_cube = self.rfc_raw[norm_idx, ...]
         data_below_seafloor = norm_cube[
             mute_above_seafloor(wb_plus_15samples, np.ones(norm_cube.shape, "float"))
             != 0.0

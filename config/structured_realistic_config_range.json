@@ -1,0 +1,101 @@
+{
+  "project": "example",
+  "project_display_name": "structured_realistic_model",
+  "project_folder": "/raid/ridhwan/synthoseis/synthoseis_example/assets",
+  "work_folder": "/raid/ridhwan/synthoseis/synthoseis_example",
+  "cube_shape": [
+    64,
+    64,
+    256
+  ],
+  "incident_angles": [
+    0
+  ],
+  "digi": 2.0,
+  "infill_factor": 10,
+  "thickness_min": [
+    "randint",
+    3,
+    5
+  ],
+  "thickness_max": [
+    "randint",
+    6,
+    10
+  ],
+  "sand_layer_thickness": [
+    "randint",
+    4,
+    8
+  ],
+  "sand_layer_fraction": [
+    "uniform",
+    0.45,
+    0.65
+  ],
+  "dip_factor_max": [
+    "uniform",
+    0.4,
+    0.7
+  ],
+  "min_number_faults": [
+    "randint",
+    3,
+    5
+  ],
+  "max_number_faults": [
+    "randint",
+    5,
+    8
+  ],
+  "initial_layer_stdev": [
+    "uniform",
+    2,
+    4
+  ],
+  "seabed_min_depth": 50,
+  "signal_to_noise_ratio_db": [
+    "uniform",
+    20,
+    30
+  ],
+  "bandwidth_low": [
+    "uniform",
+    10,
+    15
+  ],
+  "bandwidth_high": [
+    "uniform",
+    50,
+    70
+  ],
+  "bandwidth_ord": [
+    "randint",
+    2,
+    4
+  ],
+  "pad_samples": 10,
+  "max_column_height": [
+    150.0,
+    150.0
+  ],
+  "closure_types": [
+    "simple",
+    "faulted",
+    "onlap"
+  ],
+  "min_closure_voxels_simple": 500,
+  "min_closure_voxels_faulted": 2500,
+  "min_closure_voxels_onlap": 500,
+  "extra_qc_plots": true,
+  "verbose": true,
+  "partial_voxels": true,
+  "variable_shale_ng": true,
+  "basin_floor_fans": false,
+  "include_channels": false,
+  "include_salt": true,
+  "write_to_hdf": false,
+  "broadband_qc_volume": false,
+  "model_qc_volumes": false,
+  "multiprocess_bp": true
+}

@@ -1568,7 +1568,12 @@ class Closures(Horizons, Geomodel, Parameters):
                 cl["near_25pct"] = np.percentile(near, 25)
                 cl["near_median"] = np.percentile(near, 50)
                 cl["near_75pct"] = np.percentile(near, 75)
-                mid = seismic_nmf[1, ...][np.where(top_closure == 1)]
+                if seismic_nmf.shape[0] > 1:
+                    mid = seismic_nmf[1, ...][np.where(top_closure == 1)]
+                else:
+                    # Handle the case where there is only one slice
+                    mid = seismic_nmf[0, ...][np.where(top_closure == 1)]
+                    # or set mid = None, or raise a more informative error
                 cl["mid_min"] = np.min(mid)
                 cl["mid_max"] = np.max(mid)
                 cl["mid_avg"] = np.mean(mid)
@@ -1576,7 +1581,15 @@ class Closures(Horizons, Geomodel, Parameters):
                 cl["mid_25pct"] = np.percentile(mid, 25)
                 cl["mid_median"] = np.percentile(mid, 50)
                 cl["mid_75pct"] = np.percentile(mid, 75)
-                far = seismic_nmf[2, ...][np.where(top_closure == 1)]
+                if seismic_nmf.shape[0] > 2:
+                    far = seismic_nmf[2, ...][np.where(top_closure == 1)]
+                else:
+                    # Handle the case where there are fewer than 3 angles
+                    # Use the last available angle or duplicate from an existing one
+                    if seismic_nmf.shape[0] == 2:
+                        far = seismic_nmf[1, ...][np.where(top_closure == 1)]
+                    else:
+                        far = seismic_nmf[0, ...][np.where(top_closure == 1)]
                 cl["far_min"] = np.min(far)
                 cl["far_max"] = np.max(far)
                 cl["far_avg"] = np.mean(far)

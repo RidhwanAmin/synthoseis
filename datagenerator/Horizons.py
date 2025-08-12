@@ -349,7 +349,7 @@ class RandomHorizonStack(Horizons):
         # Onlaps
         onlap_layer_list = np.sort(
             np.random.uniform(
-                low=5, high=200, size=int(np.random.triangular(1, 4, 7) + 0.5)
+                low=5, high=self.max_layers, size=int(np.random.triangular(1, 4, 7) + 0.5)
             ).astype("int")
         )
         # Dips

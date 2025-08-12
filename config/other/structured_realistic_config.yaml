@@ -1,0 +1,46 @@
+project: structured_realistic_model
+project_folder: /raid/ridhwan/synthoseis/synthoseis_example/assets
+work_folder: /raid/ridhwan/synthoseis/synthoseis_example
+bandwidth_high: '!!python/object/apply:numpy.random.uniform [70, 90]'
+bandwidth_low: '!!python/object/apply:numpy.random.uniform [5, 10]'
+bandwidth_ord: '!!python/object/apply:numpy.random.randint [2, 4]'
+basin_floor_fans: false
+broadband_qc_volume: false
+closure_types:
+- simple
+- faulted
+- onlap
+cube_shape:
+- 64
+- 64
+- 256
+digi: 1.0
+dip_factor_max: '!!python/object/apply:numpy.random.uniform [0.5, 0.8]'
+extra_qc_plots: true
+incident_angles:
+- 0
+include_channels: false
+include_salt: true
+infill_factor: 10
+initial_layer_stdev: '!!python/object/apply:numpy.random.uniform [3, 5]'
+max_column_height:
+- 150.0
+- 150.0
+max_number_faults: '!!python/object/apply:numpy.random.randint [4, 7]'
+min_closure_voxels_faulted: 2500
+min_closure_voxels_onlap: 500
+min_closure_voxels_simple: 500
+min_number_faults: '!!python/object/apply:numpy.random.randint [2, 4]'
+model_qc_volumes: true
+multiprocess_bp: true
+pad_samples: 10
+partial_voxels: true
+sand_layer_fraction: '!!python/object/apply:numpy.random.uniform [0.4, 0.6]'
+sand_layer_thickness: '!!python/object/apply:numpy.random.randint [1, 2]'
+seabed_min_depth: 50
+signal_to_noise_ratio_db: '!!python/object/apply:numpy.random.uniform [5, 15]'
+thickness_max: '!!python/object/apply:numpy.random.randint [4, 6]'
+thickness_min: '!!python/object/apply:numpy.random.randint [2, 3]'
+variable_shale_ng: true
+verbose: true
+write_to_hdf: false
